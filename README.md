@@ -120,3 +120,15 @@ resource "null_resource" "database_setup" {
 
 It creates a table with one database entry using sqlcmd <br> <br>
 ` sqlcmd -S appserver6008089.database.windows.net -U sqladmin -P Azure@123 -d appdb -i init.sql `
+
+# Issues:
+- Probably because the firewall rules didnt take effect when the command executed. Running `tf apply` 2nd time fixed it<br><br>
+  ` Error: local-exec provisioner error
+  │
+  │   with null_resource.database_setup,
+  │   on main.tf line 94, in resource "null_resource" "database_setup":
+  │   94:   provisioner "local-exec" {
+  │
+  │ Error running command 'sqlcmd -S appserver6008089.database.windows.net -U sqladmin -P Azure@123 -d appdb -i init.sql': exit status 1. Output: Sqlcmd: Error: Microsoft ODBC Driver 17 for SQL Server :     
+  │ Cannot open server 'appserver6008089' requested by the login. Client with IP address '82.12.90.169' is not allowed to access the server.  To enable access, use the Windows Azure Management Portal or run 
+  │ sp_set_firewall_rule on the master database to create a firewall rule for this IP address or address range.  It may take up to five minutes for this change to take effect.. `
